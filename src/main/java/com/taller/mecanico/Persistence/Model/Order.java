@@ -26,15 +26,15 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; //
 
     @Column(name = "customer_id", nullable = false)
-    private Long customer;
-    // acá pongo column(name="advisor id")? pero no 
+    private Long customer; //
+   
     @ManyToOne
     @JoinColumn(name = "advisor_id", nullable = false)
     private User advisor;
-    // la misma precunta de arriba?
+   
     @ManyToOne
     @JoinColumn(name = "mechanic_id")
     private User mechanic;
