@@ -2,14 +2,13 @@
 GET http://localhost:8080/users
 
 ###
-GET http://localhost:8080/users/123
+GET http://localhost:8080/users/3
 
 ### 
 GET http://localhost:8080/users/role/SUPER_ADMIN
 
 ### 
-GET http://localhost:8080/users/search/name?name=John
-
+GET http://localhost:8080/users/search/name?name=dd
 ###POST 
 
 POST http://localhost:8080/users
