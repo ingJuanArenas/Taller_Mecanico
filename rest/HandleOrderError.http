@@ -3,38 +3,38 @@
 GET http://localhost:8080/api/orders
 
 ### get by id
-GET http://localhost:8080/api/orders/7
+GET http://localhost:8080/api/orders/4221412
 
 ### get by customer id
-GET http://localhost:8080/api/orders/search/customer?customer=105
+GET http://localhost:8080/api/orders/search/customer?customer=0
 
 ### 
 POST http://localhost:8080/api/orders
 Content-Type: application/json
 
 {
-    "customerId": 24680,
-    "vehiclePlate": "AXC-223",
+    "customerId": 2312233,
+    "vehiclePlate": "AYC-223",
     "vehicleModel": "Audi  ultra",
     "description": "Pinchado",
     "total": 50000,
-    "advisorId": 2
+    "advisorId": 99999
 }
 ###
-PUT http://localhost:8080/api/orders/update/2
+PUT http://localhost:8080/api/orders/update/9
 Content-Type: application/json
 
 {
     "description": "Se realizó cambio de aceite, filtro y revisión de frenos",
-    "total": 100000
+    "total": sadasd
 }
 
 ###
-DELETE http://localhost:8080/api/orders/7
+DELETE http://localhost:8080/api/orders/123323
 ###
 GET http://localhost:8080/api/orders/available
 ####
-PUT http://localhost:8080/api/orders/take/8?mechanicId=102
+PUT http://localhost:8080/api/orders/take/1?mechanicId=9999
 
 ### 
 GET http://localhost:8080/api/orders/active/102
