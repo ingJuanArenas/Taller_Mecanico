@@ -3,13 +3,13 @@ package com.taller.mecanico.Web.Controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taller.mecanico.Domain.DTOs.CreateOrderDTO;
+import com.taller.mecanico.Domain.DTOs.OrderResponseDTO;
 import com.taller.mecanico.Domain.DTOs.UpdateOrderDTO;
 import com.taller.mecanico.Domain.Service.OrderService;
-import com.taller.mecanico.Persistence.Model.Order;
-import com.taller.mecanico.Persistence.Model.OrderStatus;
-import com.taller.mecanico.Persistence.Projections.OrderSummary;
 
-import java.time.LocalDateTime;
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -37,56 +37,57 @@ public class OrderController {
 
 
     @GetMapping
-    public ResponseEntity<List<OrderSummary>> getAllOrders() {
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAll());
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderSummary> getById(@PathVariable Long id){
+    public ResponseEntity<OrderResponseDTO> getById( @PathVariable Long id){
         return ResponseEntity.ok(orderService.getById(id));
     }
 
     @GetMapping("/search/customer")
-    public ResponseEntity<List<OrderSummary>> getByCustomer(@RequestParam("customer") Long customerId){
+    public ResponseEntity<List<OrderResponseDTO>> getByCustomer( @RequestParam("customer") Long customerId){
         return ResponseEntity.ok(orderService.getByCustomer(customerId));
     }
 
-    @GetMapping("/search/advisor")
-    public ResponseEntity<List<OrderSummary>> getByAdvisor(@RequestParam("advisor") Long advisorId){
-        return ResponseEntity.ok(orderService.getByAdvisor(advisorId));
+    @GetMapping("/active/{mechanicId}")
+    public ResponseEntity<Boolean> mechanicHasActiveOrder( @PathVariable Long mechanicId) {
+        return ResponseEntity.ok(orderService.mechanicHasActiveOrder(mechanicId));
     }
 
-    @GetMapping("/search/mechanic")
-    public ResponseEntity<List<OrderSummary>> getByMechanic(@RequestParam("mechanic") Long mechanicId){
-        return ResponseEntity.ok(orderService.getByMechanic(mechanicId));
-    }
-
-    @GetMapping("/search/status")
-    public ResponseEntity<List<OrderSummary>> getByStatus(@RequestParam("status") OrderStatus status){
-        return ResponseEntity.ok(orderService.getByStatus(status));
-    }
-
-    @GetMapping("/search/date")
-    public ResponseEntity<List<OrderSummary>> getByDateRange(@RequestParam("start") String start, @RequestParam("end") String end){
-        return ResponseEntity.ok(orderService.getByDateRange(start, end));
-    }
     
    @PostMapping
-    public ResponseEntity<OrderSummary> create(@RequestBody Order order){
+    public ResponseEntity<OrderResponseDTO> create(@Valid @RequestBody CreateOrderDTO order){
         return ResponseEntity.ok(orderService.create(order));
     }
     
  
     @PutMapping("/update/{id}")
-    public ResponseEntity<OrderSummary> update(@PathVariable Long id, @RequestBody UpdateOrderDTO order){
+    public ResponseEntity<OrderResponseDTO> update(@PathVariable Long id, @Valid @RequestBody UpdateOrderDTO order){
         return ResponseEntity.ok(orderService.update(id, order));
     }
     
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete( @PathVariable Long id){
         orderService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<OrderResponseDTO>> getAvailableOrders() {
+        return ResponseEntity.ok(orderService.getAvailableOrders());
+    }
+
+    @PutMapping("/take/{id}")
+    public ResponseEntity<OrderResponseDTO> takeOrder(
+         @PathVariable Long id,
+         @RequestParam("mechanicId") Long mechanicId) {
+        return ResponseEntity.ok(orderService.takeOrder(id, mechanicId));
+    }
+
+    
+
 }

@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.taller.mecanico.Domain.DTOs.UserDTO;
 import com.taller.mecanico.Domain.Service.UserService;
-import com.taller.mecanico.Persistence.Model.UserRole;
-import com.taller.mecanico.Persistence.Projections.UserSummary;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 
 @RestController
 @RequestMapping("/users")
@@ -38,28 +39,24 @@ public class UserController {
         return ResponseEntity.ok(userService.getById(id));
     }
 
-    @GetMapping("/search/name")
-    public ResponseEntity<List<UserSummary>> getByName(@RequestParam("name") String name){
-        return ResponseEntity.ok(userService.getByName(name));
+    @GetMapping("/find")
+    public ResponseEntity<UserDTO> findByCode(@Size(min = 7, max = 20) @RequestParam String code){
+        return ResponseEntity.ok(userService.findByAccessCode(code));
     }
 
-    @GetMapping("/role/{role}")
-    public ResponseEntity<List<UserSummary>> getByRole(@PathVariable UserRole role){
-        return ResponseEntity.ok(userService.getByRole(role));
-    }
 
     @PostMapping
-    public ResponseEntity<UserDTO> create(@RequestBody UserDTO user){
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserDTO user){
         return ResponseEntity.ok(userService.create(user));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO user){
+    public ResponseEntity<UserDTO> update( @PathVariable Long id, @Valid @RequestBody UserDTO user){
         return ResponseEntity.ok(userService.update(id, user));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete( @PathVariable Long id){
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
