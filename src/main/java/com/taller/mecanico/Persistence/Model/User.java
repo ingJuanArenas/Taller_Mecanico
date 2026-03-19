@@ -2,6 +2,7 @@ package com.taller.mecanico.Persistence.Model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.Setter;
 public class User {
 
     @Id
+    @Column(unique = true, updatable = false)
     private Long id;
 
     @Column(nullable = false)
@@ -26,8 +28,10 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "access_code", nullable = false, unique = true)
+    private String accessCode;
 
+    @Column(nullable = false)
+    private Boolean active = true;
     
 }
