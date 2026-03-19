@@ -2,10 +2,10 @@ package com.taller.mecanico.Domain.DTOs;
 
 import java.math.BigDecimal;
 
-import com.taller.mecanico.Persistence.Model.OrderStatus;
+import jakarta.validation.constraints.Min;
 
 public record UpdateOrderDTO(
     String description,
-    BigDecimal total,
-    OrderStatus status
+    @Min(value = 1, message = "Total amount must be greater than 1")
+    BigDecimal total
 ) {}
