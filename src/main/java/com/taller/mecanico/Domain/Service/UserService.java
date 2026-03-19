@@ -5,8 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.taller.mecanico.Domain.DTOs.UserDTO;
-import com.taller.mecanico.Persistence.Model.UserRole;
-import com.taller.mecanico.Persistence.Projections.UserSummary;
+import com.taller.mecanico.Domain.Exceptions.AlreadyExistsException;
 import com.taller.mecanico.Persistence.Repository.UserRepositoryImpl;
 
 @Service
@@ -22,25 +21,19 @@ public class UserService {
         return userRepository.getAll();
     }
 
-    public List<UserSummary> getByName(String name){
-        if (name.isBlank()) {
-            throw new IllegalArgumentException("Name cannot be blank");
-        }
-        return userRepository.getByName(name);
-    }
-
-    public List<UserSummary> getByRole(UserRole role){
-        return userRepository.getByRole(role);
-    }
-
     public UserDTO getById(Long id){
-        if (id <= 0) {
-            throw new IllegalArgumentException("Id must be greater than 0");
-        }
         return userRepository.getById(id);
     }
 
+    public UserDTO findByAccessCode(String code){
+        return userRepository.findByAccessCode(code);
+       
+    }
+
+
     public UserDTO create(UserDTO user){
+       var exists=  userRepository.existById(user.id());
+       if (exists) throw new AlreadyExistsException("Id already registered");
         return userRepository.create(user);
     }
 
