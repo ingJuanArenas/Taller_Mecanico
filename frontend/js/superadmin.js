@@ -1,4 +1,4 @@
-import { UserAPI, getOrEmpty } from "./api.js";
+import { UserAPI, OrderAPI, getOrEmpty } from "./api.js";
 import { getSession, requireAuth, clearSession } from "./auth.js";
 
 requireAuth("SUPER_ADMIN");
@@ -133,5 +133,100 @@ document.getElementById("btnVolverLista").addEventListener("click", () => {
 document.getElementById("btnCrearUsuario").addEventListener("click", () => crearUsuario());
 
 document.getElementById("buscarNombre").addEventListener("input", filterUsers);
+
+// --- TAB LOGIC ---
+document.getElementById("tabUsuarios").addEventListener("click", () => {
+  document.getElementById("moduleUsuarios").classList.remove("hidden");
+  document.getElementById("moduleOrdenes").classList.add("hidden");
+  document.getElementById("tabUsuarios").className = "btn btn-accent";
+  document.getElementById("tabOrdenes").className = "btn btn-primary";
+});
+
+document.getElementById("tabOrdenes").addEventListener("click", () => {
+  document.getElementById("moduleUsuarios").classList.add("hidden");
+  document.getElementById("moduleOrdenes").classList.remove("hidden");
+  document.getElementById("tabUsuarios").className = "btn btn-primary";
+  document.getElementById("tabOrdenes").className = "btn btn-accent";
+  loadOrdenes();
+});
+
+// --- ORDER LOGIC ---
+let ordenesCacheSuper = [];
+let interveneOrderId = null;
+
+async function loadOrdenes() {
+  const all = await getOrEmpty(() => OrderAPI.getAll());
+  ordenesCacheSuper = all.filter(o => o.status !== "COMPLETED");
+  renderOrdenes(ordenesCacheSuper);
+}
+
+function renderOrdenes(list) {
+  const empty = document.getElementById("ordEmpty");
+  const wrap = document.getElementById("ordTableWrap");
+  const body = document.getElementById("ordBody");
+  body.innerHTML = "";
+
+  if (list.length === 0) {
+    empty.classList.remove("hidden");
+    wrap.classList.add("hidden");
+    return;
+  }
+  empty.classList.add("hidden");
+  wrap.classList.remove("hidden");
+
+  for (const o of list) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${o.id}</td>
+      <td>${o.status}</td>
+      <td>${o.vehiclePlate ?? ""}</td>
+      <td>${new Date(o.createdAt).toLocaleString("es-CO")}</td>
+      <td>
+        <button type="button" class="btn btn-accent btn-int-ord" data-id="${o.id}">INTERVENIR</button>
+      </td>
+    `;
+    body.appendChild(tr);
+  }
+
+  body.querySelectorAll(".btn-int-ord").forEach(btn => {
+    btn.addEventListener("click", () => openIntervenir(Number(btn.dataset.id)));
+  });
+}
+
+function openIntervenir(id) {
+  interveneOrderId = id;
+  const o = ordenesCacheSuper.find(x => x.id === id);
+  if(!o) return;
+  document.getElementById("vistaOrdenes").classList.add("hidden");
+  document.getElementById("vistaIntervenir").classList.remove("hidden");
+  document.getElementById("tituloIntervenir").textContent = `INTERVENIR ORDEN #${o.id}`;
+  document.getElementById("intEstado").value = o.status;
+  document.getElementById("intMotivo").value = "";
+}
+
+document.getElementById("btnVolverOrdenes").addEventListener("click", () => {
+  document.getElementById("vistaIntervenir").classList.add("hidden");
+  document.getElementById("vistaOrdenes").classList.remove("hidden");
+});
+
+document.getElementById("btnIntervenir").addEventListener("click", async () => {
+  if(!interveneOrderId) return;
+  const motivo = document.getElementById("intMotivo").value.trim();
+  const st = document.getElementById("intEstado").value;
+  if(!motivo) {
+    showToast("El motivo es obligatorio", "error");
+    return;
+  }
+  try {
+    await OrderAPI.intervene(interveneOrderId, { reason: motivo, status: st });
+    showToast("Orden intervenida correctamente", "success");
+    document.getElementById("vistaIntervenir").classList.add("hidden");
+    document.getElementById("vistaOrdenes").classList.remove("hidden");
+    interveneOrderId = null;
+    await loadOrdenes();
+  } catch(e) {
+    showToast(e.message || "Error al intervenir orden", "error");
+  }
+});
 
 loadUsers();

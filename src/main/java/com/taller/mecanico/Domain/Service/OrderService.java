@@ -83,6 +83,16 @@ public class OrderService {
         return orderRepository.takeOrder(id, mechanicId);
     }
 
+    public OrderResponseDTO releaseOrder(Long id, Long mechanicId) {
+        var role = userRepository.getById(mechanicId).role().equals(UserRole.MECHANIC);
+        if (!role) throw new BadRequestException("Only mechanics can release orders");
+        return orderRepository.releaseOrder(id, mechanicId);
+    }
+
+    public OrderResponseDTO interveneOrder(Long id, com.taller.mecanico.Domain.DTOs.InterveneOrderDTO dto) {
+        return orderRepository.interveneOrder(id, dto);
+    }
+
     public void delete(Long id){
         var order = orderRepository.getById(id).status().equals(OrderStatus.CREATED);
         if (!order) throw new BadRequestException("Only delete orders in CREATED status");

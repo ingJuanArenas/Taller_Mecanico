@@ -43,12 +43,23 @@
       <div class="card">
         <h2 id="tituloActualizar">ACTUALIZAR ORDEN</h2>
         <div class="readonly-grid" id="gridReadonly"></div>
-        <label for="descripcion">TRABAJO REALIZADO</label>
-        <textarea id="descripcion" rows="5"></textarea>
-        <label for="total">TOTAL</label>
-        <input type="number" id="total" min="1" step="1" />
-        <div class="form-actions">
-          <button type="button" id="btnActualizar" class="btn btn-accent">ACTUALIZAR</button>
+        <hr style="margin: 16px 0;" />
+        <h3>PROCEDIMIENTOS</h3>
+        <div id="listaProcedimientos" style="margin-bottom: 16px;"></div>
+        
+        <div class="procedure-form" style="background:#f9f9f9; padding:12px; border-radius:4px; border:1px solid #ddd;">
+          <h4>Nuevo Procedimiento</h4>
+          <label for="procNombre">NOMBRE</label>
+          <input type="text" id="procNombre" maxlength="100" />
+          <label for="procDesc">DESCRIPCIÓN</label>
+          <textarea id="procDesc" rows="2"></textarea>
+          <label for="procTiempo">TIEMPO EJECUCIÓN (minutos)</label>
+          <input type="number" id="procTiempo" min="1" step="1" />
+          <button type="button" id="btnCrearProc" class="btn btn-primary" style="margin-top:8px;">AÑADIR PROCEDIMIENTO</button>
+        </div>
+
+        <div class="form-actions" style="margin-top: 24px;">
+          <button type="button" id="btnTerminarTrabajo" class="btn btn-accent">FINALIZAR TRABAJO</button>
         </div>
       </div>
       </div>
@@ -66,6 +77,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/mecanico.js"></script>
+  <script type="module" src="js/mecanico.js?v=2"></script>
 </body>
 </html>

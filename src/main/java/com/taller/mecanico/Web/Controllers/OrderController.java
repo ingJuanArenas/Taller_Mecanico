@@ -90,6 +90,16 @@ public class OrderController {
         return ResponseEntity.ok(orderService.takeOrder(id, mechanicId));
     }
 
+    @PutMapping("/{id}/release")
+    public ResponseEntity<OrderResponseDTO> releaseOrder(@PathVariable Long id, @RequestParam("mechanicId") Long mechanicId) {
+        return ResponseEntity.ok(orderService.releaseOrder(id, mechanicId));
+    }
+
+    @PutMapping("/{id}/intervene")
+    public ResponseEntity<OrderResponseDTO> interveneOrder(@PathVariable Long id, @Valid @RequestBody com.taller.mecanico.Domain.DTOs.InterveneOrderDTO dto) {
+        return ResponseEntity.ok(orderService.interveneOrder(id, dto));
+    }
+
     
 
 }

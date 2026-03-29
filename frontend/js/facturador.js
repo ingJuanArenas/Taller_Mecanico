@@ -1,4 +1,4 @@
-import { OrderAPI, getOrEmpty } from "./api.js";
+import { OrderAPI, ProcedureAPI, getOrEmpty } from "./api.js";
 import { getSession, requireAuth, clearSession } from "./auth.js";
 
 requireAuth("SERVICE_ADVISOR");
@@ -52,7 +52,7 @@ async function loadDashboard() {
   } else {
     list = await getOrEmpty(() => OrderAPI.getAll());
   }
-  list = list.filter(o => o.status !== "COMPLETED");
+  list = list.filter(o => o.status === "CREATED" || (o.status === "IN_PROGRESS" && o.mechanicFinished === true));
   ordenesCache = list;
   renderTable(list);
   showDashboard();
@@ -80,7 +80,7 @@ function renderTable(list) {
         <button type="button" class="btn btn-accent btn-edit" data-id="${o.id}" title="Editar">✏️</button>
         <button type="button" class="btn btn-danger btn-del" data-id="${o.id}" title="Eliminar">🗑️</button>
       `;
-    } else if (o.status === "IN_PROGRESS") {
+    } else if (o.status === "IN_PROGRESS" && o.mechanicFinished) {
       actions = `<button type="button" class="btn btn-accent btn-fin" data-id="${o.id}" title="Finalizar">✏️</button>`;
     }
     tr.innerHTML = `
@@ -126,7 +126,7 @@ async function eliminarOrden(id) {
   }
 }
 
-function openFinalizar(orderId) {
+async function openFinalizar(orderId) {
   const o = ordenesCache.find(x => x.id === orderId);
   if (!o) return;
   finalizeOrderId = orderId;
@@ -138,8 +138,42 @@ function openFinalizar(orderId) {
     <div class="readonly-block"><span>MODELO</span>${o.vehicleModel ?? ""}</div>
     <div class="readonly-block"><span>TRABAJO / DESCRIPCIÓN</span>${finalizeDescription || "—"}</div>
   `;
-  document.getElementById("fTotal").value = o.total != null ? String(o.total) : "";
+  
+  const pList = await getOrEmpty(() => ProcedureAPI.getByOrderId(orderId));
+  const cnt = document.getElementById("listaFinalizarProcedimientos");
+  cnt.innerHTML = "";
+  if(pList.length === 0) {
+    cnt.innerHTML = "<div>No hay procedimientos en esta orden.</div>";
+  } else {
+    pList.forEach(p => {
+      const d = document.createElement("div");
+      d.style.cssText = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:8px 0;";
+      d.innerHTML = `
+        <div>
+          <strong>${p.name}</strong> <span style="font-size:0.85em;">(${p.executionTime} min)</span>
+        </div>
+        <div>
+          <label>Costo: $</label>
+          <input type="number" class="proc-price-input" data-id="${p.id}" value="${p.price||0}" min="0" style="width:100px; padding:4px;" />
+        </div>
+      `;
+      cnt.appendChild(d);
+    });
+    
+    cnt.querySelectorAll(".proc-price-input").forEach(inp => {
+      inp.addEventListener("input", recalcularTotal);
+    });
+  }
+  recalcularTotal();
   showFinalizar();
+}
+
+function recalcularTotal() {
+  let t = 0;
+  document.querySelectorAll(".proc-price-input").forEach(inp => {
+    t += parseFloat(inp.value || 0);
+  });
+  document.getElementById("fTotalCalculado").textContent = new Intl.NumberFormat("es-CO", {style:"currency", currency:"COP"}).format(t);
 }
 
 async function crearOrden() {
@@ -174,15 +208,17 @@ async function crearOrden() {
 }
 
 async function finalizarOrden() {
-  const total = parseFloat(document.getElementById("fTotal").value);
-  if (!total || total < 1) {
-    showToast("Total inválido", "error");
-    return;
+  const inputs = document.querySelectorAll(".proc-price-input");
+  for(const inp of inputs) {
+    const pid = Number(inp.dataset.id);
+    const pprice = parseFloat(inp.value || 0);
+    await ProcedureAPI.updatePrice(pid, { price: pprice });
   }
+
   try {
     await OrderAPI.update(finalizeOrderId, {
       description: finalizeDescription,
-      total,
+      total: 0,
       complete: true,
     });
     showToast("Orden finalizada", "success");

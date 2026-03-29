@@ -9,12 +9,19 @@
 </head>
 <body>
   <header class="view-header">
-    <h1>BIENVENIDO, <span id="welcomeName"></span></h1>
-    <button type="button" id="btnLogout" class="btn btn-primary">Cerrar sesión</button>
+    <div style="display:flex; align-items:center; width:100%;">
+      <h1 style="margin:0;">BIENVENIDO, <span id="welcomeName"></span></h1>
+      <button type="button" id="btnLogout" class="btn btn-primary" style="margin-left:auto;">Cerrar sesión</button>
+    </div>
+    <div class="tabs" style="margin-top:12px; display:flex; gap:8px;">
+      <button type="button" id="tabUsuarios" class="btn btn-accent">Gestionar Usuarios</button>
+      <button type="button" id="tabOrdenes" class="btn btn-primary">Gestionar Órdenes</button>
+    </div>
   </header>
 
   <main class="main-wrap">
-    <section id="vistaLista">
+    <div id="moduleUsuarios">
+      <section id="vistaLista">
       <div class="toolbar">
         <button type="button" id="btnNuevoUsuario" class="btn btn-success btn-icon" title="Nuevo usuario">+</button>
         <label for="buscarNombre">Buscar nombre</label>
@@ -70,7 +77,57 @@
         </div>
       </div>
       </div>
-    </section>
+      </section>
+    </div>
+
+    <div id="moduleOrdenes" class="hidden">
+      <section id="vistaOrdenes">
+        <div class="card">
+          <h2>Órdenes Activas</h2>
+          <div id="ordEmpty" class="empty-msg hidden">No hay órdenes para intervenir.</div>
+          <div id="ordTableWrap" class="hidden">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>ESTADO</th>
+                  <th>PLACA</th>
+                  <th>FECHA</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="ordBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="vistaIntervenir" class="hidden">
+        <div class="form-page">
+        <div class="card">
+          <h2 id="tituloIntervenir">INTERVENIR ORDEN</h2>
+          <div class="form-grid">
+            <div>
+              <label for="intEstado">NUEVO ESTADO</label>
+              <select id="intEstado">
+                <option value="CREATED">PENDIENTE (CREATED)</option>
+                <option value="IN_PROGRESS">EN PROCESO (IN_PROGRESS)</option>
+                <option value="COMPLETED">CANCELAR / FINALIZAR (COMPLETED)</option>
+              </select>
+            </div>
+            <div>
+              <label for="intMotivo">MOTIVO DE INTERVENCIÓN</label>
+              <textarea id="intMotivo" rows="3"></textarea>
+            </div>
+            <div class="form-actions" style="grid-column: 1 / -1;">
+              <button type="button" id="btnIntervenir" class="btn btn-accent">CONFIRMAR</button>
+              <button type="button" id="btnVolverOrdenes" class="btn btn-primary">VOLVER</button>
+            </div>
+          </div>
+        </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <script type="module" src="js/superadmin.js"></script>
