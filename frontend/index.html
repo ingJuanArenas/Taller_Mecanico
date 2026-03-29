@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taller Amiguitos del Motor — Acceso</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+  <div class="login-split">
+    <div class="login-visual" aria-hidden="true"></div>
+    <div class="login-panel">
+      <div class="login-inner">
+        <h1 class="login-title">TALLER AMIGUITOS DEL MOTOR</h1>
+        <label class="login-label" for="accessCode">CODIGO DE ACCESO</label>
+        <input
+          id="accessCode"
+          type="password"
+          maxlength="20"
+          autocomplete="off"
+          placeholder="•••••••"
+        />
+        <button type="button" id="btnLogin" class="btn btn-accent">ENTRAR</button>
+        <p id="loginError" class="error-msg hidden">Código incorrecto o usuario inactivo.</p>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>

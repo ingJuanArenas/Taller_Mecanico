@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Facturador — Taller Amiguitos del Motor</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/facturador.css" />
+</head>
+<body>
+  <header class="view-header">
+    <h1>BIENVENIDO, <span id="welcomeName"></span></h1>
+    <button type="button" id="btnLogout" class="btn btn-primary">Cerrar sesión</button>
+  </header>
+
+  <main class="main-wrap">
+    <section id="vistaDashboard">
+      <div class="toolbar">
+        <button type="button" id="btnNuevaOrden" class="btn btn-success btn-icon" title="Nueva orden">+</button>
+        <label for="buscarCedula">Cédula cliente</label>
+        <input type="search" id="buscarCedula" placeholder="Buscar por cédula" inputmode="numeric" autocomplete="off" />
+      </div>
+      <div class="card">
+        <div id="dashEmpty" class="empty-msg hidden">No hay órdenes registradas.</div>
+        <div id="dashTableWrap" class="hidden">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>FECHA CREACION</th>
+                <th>PLACA</th>
+                <th>ACCION</th>
+              </tr>
+            </thead>
+            <tbody id="dashBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="vistaCrear" class="hidden">
+      <div class="form-page">
+      <div class="card">
+        <h2>Nueva orden</h2>
+        <div class="form-grid">
+          <div>
+            <label for="cCedula">CEDULA</label>
+            <input type="text" id="cCedula" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="cPlaca">PLACA</label>
+            <input type="text" id="cPlaca" maxlength="8" />
+          </div>
+          <div>
+            <label for="cModelo">MODELO</label>
+            <input type="text" id="cModelo" maxlength="100" />
+          </div>
+          <div>
+            <label for="cMotivo">MOTIVO</label>
+            <textarea id="cMotivo" rows="4"></textarea>
+          </div>
+          <div class="form-actions" style="grid-column: 1 / -1;">
+          <button type="button" id="btnCrearOrden" class="btn btn-accent">CREAR</button>
+          <button type="button" id="btnVolverCrear" class="btn btn-primary">Volver al listado</button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section id="vistaFinalizar" class="hidden">
+      <div class="form-page">
+      <div class="card">
+        <h2 id="tituloFinalizar">FINALIZAR ORDEN</h2>
+        <div id="finalReadonly"></div>
+        <label for="fTotal">TOTAL</label>
+        <input type="number" id="fTotal" min="1" step="1" />
+        <div class="form-actions" style="margin-top: 16px;">
+          <button type="button" id="btnFinalizarOrden" class="btn btn-success">FINALIZAR</button>
+          <button type="button" id="btnVolverFinalizar" class="btn btn-primary">Volver</button>
+        </div>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/facturador.js"></script>
+</body>
+</html>

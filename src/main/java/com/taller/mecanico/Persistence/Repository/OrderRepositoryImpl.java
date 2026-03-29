@@ -71,6 +71,9 @@ public class OrderRepositoryImpl implements OrderRepository {
     public OrderResponseDTO update(Long id, UpdateOrderDTO order) {
         var existingOrder = ordersCRUD.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
         orderMapper.updateEntityFromDTO(order, existingOrder);
+        if (Boolean.TRUE.equals(order.complete()) && existingOrder.getStatus() == OrderStatus.IN_PROGRESS) {
+            existingOrder.setStatus(OrderStatus.COMPLETED);
+        }
         var updatedOrder = ordersCRUD.save(existingOrder);
         return orderMapper.toDTO(updatedOrder);
     }

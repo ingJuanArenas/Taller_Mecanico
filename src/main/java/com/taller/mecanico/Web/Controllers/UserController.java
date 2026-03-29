@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.taller.mecanico.Domain.DTOs.UserDTO;
 import com.taller.mecanico.Domain.Service.UserService;
@@ -19,6 +20,7 @@ import com.taller.mecanico.Domain.Service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/users")
 public class UserController {

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mecánico — Taller Amiguitos del Motor</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/mecanico.css" />
+</head>
+<body>
+  <header class="view-header">
+    <h1>BIENVENIDO, <span id="welcomeName"></span></h1>
+    <button type="button" id="btnLogout" class="btn btn-primary">Cerrar sesión</button>
+  </header>
+
+  <main class="main-wrap">
+    <section id="vistaCola" class="hidden">
+      <div class="toolbar">
+        <label for="filtroPlaca">Buscar placa</label>
+        <input type="search" id="filtroPlaca" placeholder="ABC123" autocomplete="off" />
+      </div>
+      <div class="card">
+        <div id="colaEmpty" class="empty-msg hidden">NO HAY ORDENES DISPONIBLES EN EL MOMENTO</div>
+        <div id="colaTableWrap" class="hidden">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>FECHA CREACION</th>
+                <th>PLACA</th>
+                <th>MODELO</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="colaBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="vistaActualizar" class="hidden">
+      <div class="form-page">
+      <div class="card">
+        <h2 id="tituloActualizar">ACTUALIZAR ORDEN</h2>
+        <div class="readonly-grid" id="gridReadonly"></div>
+        <label for="descripcion">TRABAJO REALIZADO</label>
+        <textarea id="descripcion" rows="5"></textarea>
+        <label for="total">TOTAL</label>
+        <input type="number" id="total" min="1" step="1" />
+        <div class="form-actions">
+          <button type="button" id="btnActualizar" class="btn btn-accent">ACTUALIZAR</button>
+        </div>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="modalOrden" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3>Detalle de orden #<span id="modalOrderId"></span></h3>
+      <div id="modalContent"></div>
+      <div class="modal-actions">
+        <button type="button" id="modalCerrar" class="btn btn-primary">Cerrar</button>
+        <button type="button" id="modalTomar" class="btn btn-accent">TOMAR</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/mecanico.js"></script>
+</body>
+</html>
