@@ -58,8 +58,10 @@ public class Order {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "mechanic_finished")
+    private Boolean mechanicFinished = false;
 
+    @Column(name = "intervention_reason")
+    private String interventionReason;
 
-    
-    
 }

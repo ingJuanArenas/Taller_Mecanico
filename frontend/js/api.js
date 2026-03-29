@@ -28,7 +28,16 @@ export const OrderAPI = {
   create:  (data)       => fetch(ORDERS_BASE, { method: "POST", headers: JSON_HEADERS, body: JSON.stringify(data) }).then(handleResponse),
   update:  (id, data)   => fetch(`${ORDERS_BASE}/update/${id}`, { method: "PUT", headers: JSON_HEADERS, body: JSON.stringify(data) }).then(handleResponse),
   takeOrder: (oid, mid) => fetch(`${ORDERS_BASE}/take/${oid}?mechanicId=${mid}`, { method: "PUT" }).then(handleResponse),
+  release: (oid, mid)   => fetch(`${ORDERS_BASE}/${oid}/release?mechanicId=${mid}`, { method: "PUT" }).then(handleResponse),
+  intervene: (oid, data)=> fetch(`${ORDERS_BASE}/${oid}/intervene`, { method: "PUT", headers: JSON_HEADERS, body: JSON.stringify(data) }).then(handleResponse),
   delete:  (id)         => fetch(`${ORDERS_BASE}/${id}`, { method: "DELETE" }).then(handleResponse),
+};
+
+export const ProcedureAPI = {
+  getByOrderId: (oid)      => fetch(`http://localhost:8080/api/procedures/order/${oid}`).then(handleResponse),
+  create:       (data)     => fetch(`http://localhost:8080/api/procedures`, { method: "POST", headers: JSON_HEADERS, body: JSON.stringify(data) }).then(handleResponse),
+  updatePrice:  (id, data) => fetch(`http://localhost:8080/api/procedures/${id}/price`, { method: "PUT", headers: JSON_HEADERS, body: JSON.stringify(data) }).then(handleResponse),
+  delete:       (id)       => fetch(`http://localhost:8080/api/procedures/${id}`, { method: "DELETE" }).then(handleResponse)
 };
 
 export async function getOrEmpty(apiFn) {

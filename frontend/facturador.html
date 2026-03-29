@@ -73,8 +73,13 @@
       <div class="card">
         <h2 id="tituloFinalizar">FINALIZAR ORDEN</h2>
         <div id="finalReadonly"></div>
-        <label for="fTotal">TOTAL</label>
-        <input type="number" id="fTotal" min="1" step="1" />
+        <h3 style="margin-top:20px;">PROCEDIMIENTOS A COBRAR</h3>
+        <div id="listaFinalizarProcedimientos"></div>
+
+        <div style="margin-top: 16px; font-weight:bold; font-size:1.2em; text-align:right;">
+          TOTAL CALCULADO: <span id="fTotalCalculado">$ 0</span>
+        </div>
+        
         <div class="form-actions" style="margin-top: 16px;">
           <button type="button" id="btnFinalizarOrden" class="btn btn-success">FINALIZAR</button>
           <button type="button" id="btnVolverFinalizar" class="btn btn-primary">Volver</button>
@@ -84,6 +89,6 @@
     </section>
   </main>
 
-  <script type="module" src="js/facturador.js"></script>
+  <script type="module" src="js/facturador.js?v=2"></script>
 </body>
 </html>

@@ -15,5 +15,7 @@ public record OrderResponseDTO(
     BigDecimal total,
     OrderStatus status,
     Long advisorId,
-    Long mechanicId
+    Long mechanicId,
+    Boolean mechanicFinished,
+    String interventionReason
 ) {}

@@ -24,5 +24,9 @@ public interface OrderRepository {
 
     boolean mechanicHasActiveOrder(Long mechanicId);
 
+    OrderResponseDTO releaseOrder(Long id, Long mechanicId);
+
+    OrderResponseDTO interveneOrder(Long id, com.taller.mecanico.Domain.DTOs.InterveneOrderDTO dto);
+
     void delete(Long id);
 }

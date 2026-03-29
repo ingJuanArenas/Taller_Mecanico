@@ -9,8 +9,11 @@ import com.taller.mecanico.Domain.DTOs.CreateOrderDTO;
 import com.taller.mecanico.Domain.DTOs.OrderResponseDTO;
 import com.taller.mecanico.Domain.DTOs.UpdateOrderDTO;
 import com.taller.mecanico.Domain.Exceptions.NotFoundException;
+import com.taller.mecanico.Domain.DTOs.InterveneOrderDTO;
+import com.taller.mecanico.Domain.Exceptions.BadRequestException;
 import com.taller.mecanico.Domain.Repository.OrderRepository;
 import com.taller.mecanico.Persistence.CRUDs.OrdersCRUD;
+import com.taller.mecanico.Persistence.CRUDs.ProceduresCRUD;
 import com.taller.mecanico.Persistence.CRUDs.UsersCRUD;
 import com.taller.mecanico.Persistence.Mapper.OrderMapper;
 import com.taller.mecanico.Persistence.Model.OrderStatus;
@@ -21,12 +24,14 @@ public class OrderRepositoryImpl implements OrderRepository {
     private final OrdersCRUD ordersCRUD;
     private final OrderMapper orderMapper;
     private final UsersCRUD usersCRUD;
+    private final ProceduresCRUD proceduresCRUD;
 
     
-    public OrderRepositoryImpl(OrdersCRUD ordersCRUD, OrderMapper orderMapper, UsersCRUD usersCRUD) {
+    public OrderRepositoryImpl(OrdersCRUD ordersCRUD, OrderMapper orderMapper, UsersCRUD usersCRUD, ProceduresCRUD proceduresCRUD) {
         this.ordersCRUD = ordersCRUD;
         this.orderMapper = orderMapper;
         this.usersCRUD = usersCRUD;
+        this.proceduresCRUD = proceduresCRUD;
     }
 
     @Override
@@ -73,6 +78,12 @@ public class OrderRepositoryImpl implements OrderRepository {
         orderMapper.updateEntityFromDTO(order, existingOrder);
         if (Boolean.TRUE.equals(order.complete()) && existingOrder.getStatus() == OrderStatus.IN_PROGRESS) {
             existingOrder.setStatus(OrderStatus.COMPLETED);
+            var procs = proceduresCRUD.findByOrderId(id);
+            java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+            for(var p : procs) {
+                if (p.getPrice() != null) total = total.add(p.getPrice());
+            }
+            existingOrder.setTotal(total);
         }
         var updatedOrder = ordersCRUD.save(existingOrder);
         return orderMapper.toDTO(updatedOrder);
@@ -101,10 +112,35 @@ public class OrderRepositoryImpl implements OrderRepository {
         var mechanicOrders = ordersCRUD.findByMechanic(mechanic);
 
         boolean hasActiveOrder = mechanicOrders.stream()
-            .anyMatch(order -> order.getStatus() == OrderStatus.IN_PROGRESS);
+            .anyMatch(order -> order.getStatus() == OrderStatus.IN_PROGRESS && !Boolean.TRUE.equals(order.getMechanicFinished()));
 
         return hasActiveOrder;
         
+    }
+
+    @Override
+    public OrderResponseDTO releaseOrder(Long id, Long mechanicId) {
+        var existingOrder = ordersCRUD.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        if (!existingOrder.getMechanic().getId().equals(mechanicId)) throw new BadRequestException("Order does not belong to mechanic");
+        if (existingOrder.getStatus() != OrderStatus.IN_PROGRESS) throw new BadRequestException("Order is not in progress");
+        var procs = proceduresCRUD.findByOrderId(id);
+        if (procs.isEmpty()) throw new BadRequestException("Order must have at least one procedure");
+        existingOrder.setMechanicFinished(true);
+        var saved = ordersCRUD.save(existingOrder);
+        return orderMapper.toDTO(saved);
+    }
+
+    @Override
+    public OrderResponseDTO interveneOrder(Long id, InterveneOrderDTO dto) {
+        var existingOrder = ordersCRUD.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        if (existingOrder.getStatus() == OrderStatus.COMPLETED) throw new BadRequestException("Cannot intervene a completed order");
+        existingOrder.setInterventionReason(dto.reason());
+        existingOrder.setStatus(dto.status());
+        if (dto.status() == OrderStatus.COMPLETED) {
+             existingOrder.setMechanicFinished(true);
+        }
+        var saved = ordersCRUD.save(existingOrder);
+        return orderMapper.toDTO(saved);
     }
 
     @Override
