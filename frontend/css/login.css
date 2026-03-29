@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--text);
+}
+
+.login-split {
+  display: flex;
+  min-height: 100vh;
+}
+
+.login-visual {
+  flex: 0 0 50%;
+  background-image: url("../assets/taller.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.login-panel {
+  flex: 0 0 50%;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  padding: 48px 64px;
+  box-sizing: border-box;
+}
+
+.login-inner {
+  max-width: 360px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 32px;
+  text-align: center;
+}
+
+.login-label {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.login-panel input {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-panel .btn {
+  width: 100%;
+}
+
+#loginError {
+  margin-top: 12px;
+  font-size: 14px;
+}
